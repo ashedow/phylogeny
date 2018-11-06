@@ -3,25 +3,7 @@ import os
 from Bio import SeqIO
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
-import argparse
 
-def check_file_exists(file_path):
-	if os.path.isfile(file_path) and os.access(file_path, os.R_OK):
-		return(True)
-	else:
-		return(False)
-
-def safe_make_dir(dirname):
-	try:
-		os.makedirs(dirname)
-	except OSError:
-		if os.path.exists(dirname):
-			# We are nearly safe
-			pass
-		else:
-			# There was an error on creation, so make sure we know about it
-			raise
-			
 def check_seq_file(seqs):	
 	seqs=args.seq
 	if(not check_file_exists(otu_map)):
@@ -32,27 +14,13 @@ def check_seq_file(seqs):
 	safe_make_dir(out_dir)
 
 def main():
-	parser = argparse.ArgumentParser(prog = 'extract_seqs_from_otu_map.py', description = 'Extract reads from otu map and write to multiple fasta files which corresponding to different OTUs.')
-	parser.add_argument('--otu_map', action = "store",required=True, help = 'The OTU and corresponding sequence IDs file output by QIIME, one line one OTU, seperate by tab. ')
-	parser.add_argument('--seq', action = "store",required=True, help = 'The fasta sequences used to analysis. Output by QIIME\'s split_library.py script. ')
-	parser.add_argument('--out_dir', action = "store",required=True, help = 'The output directory. ')
-	parser.add_argument('--otu', action = "store",required=True, help = 'The interesting OTUs to extract. one OTU one line ')
-	args = parser.parse_args()
 	# parse otu map file
 	otu_map = args.otu_map	
 	if(not check_file_exists(otu_map)):
 		print ("Either OTU_MAP file is missing or is not readable")
 		sys.exit()
 	
-	# parse seq file
-	seqs=args.seq
-	if(not check_file_exists(otu_map)):
-		print ("Either seqs file is missing or is not readable")
-		sys.exit()
-	# parse output dir
-	out_dir=args.out_dir
-	safe_make_dir(out_dir)
-
+	check_seq_file(seqs)
 	# parse OTUs interested
 	otu=args.otu
 	if(not check_file_exists(otu)):
